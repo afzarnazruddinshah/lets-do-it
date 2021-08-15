@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/lets-do-it/static/css/main.956e938a.chunk.css",
+    "main.js": "/lets-do-it/static/js/main.7ecc6aa1.chunk.js",
+    "main.js.map": "/lets-do-it/static/js/main.7ecc6aa1.chunk.js.map",
+    "runtime-main.js": "/lets-do-it/static/js/runtime-main.7110b7ce.js",
+    "runtime-main.js.map": "/lets-do-it/static/js/runtime-main.7110b7ce.js.map",
+    "static/js/2.330d9d7c.chunk.js": "/lets-do-it/static/js/2.330d9d7c.chunk.js",
+    "static/js/2.330d9d7c.chunk.js.map": "/lets-do-it/static/js/2.330d9d7c.chunk.js.map",
+    "index.html": "/lets-do-it/index.html",
+    "static/css/main.956e938a.chunk.css.map": "/lets-do-it/static/css/main.956e938a.chunk.css.map",
+    "static/js/2.330d9d7c.chunk.js.LICENSE.txt": "/lets-do-it/static/js/2.330d9d7c.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.7110b7ce.js",
+    "static/js/2.330d9d7c.chunk.js",
+    "static/css/main.956e938a.chunk.css",
+    "static/js/main.7ecc6aa1.chunk.js"
+  ]
+}
