@@ -1,12 +1,13 @@
 import React from "react";
 import { withStyles, Chip } from "@material-ui/core";
-import { TODO } from "../Todo/Todo";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import CancelIcon from '@material-ui/icons/Cancel';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import { TODO } from "../../common/constants";
+import PriorityIcon from "../PriorityIcons/PriorityIcons";
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 
 const CardItem = (props) => {
-  const { classes, label, status, itemId, onClick, onDelete } = props;
+  const { classes, label, status, itemId, onClick, onDelete, itemPriority } = props;
 
   const handleItemClick = () => {
     onClick(itemId);
@@ -21,9 +22,9 @@ const CardItem = (props) => {
         icon={<DeleteOutlineIcon className={classes.icon} fontSize="small" onClick={handleDelete} />}
         className={status === TODO ? classes.chip : classes.chipDone}
         color="primary"
-        label={`  ${label}`}
+        label={<span> {label} <PriorityIcon priority={itemPriority} /></span>}
         onDelete={handleItemClick}
-        deleteIcon={status === TODO ? <CancelIcon className={classes.chipTodo}/> :<CheckCircleIcon fontSize="large" className={classes.doneTickIcon}/>}
+        deleteIcon={status === TODO ? <CheckCircleOutlineIcon className={classes.chipTodo}/> :<CheckCircleIcon fontSize="large" className={classes.doneTickIcon}/>}
       />
     </div>
   );
@@ -32,7 +33,6 @@ const CardItem = (props) => {
 const styles = (theme) => ({
   root: {
     margin: "20px",
-    border: '1px solid #ccc',
   },
   chip: {
     color: "#f1faee",
@@ -45,7 +45,7 @@ const styles = (theme) => ({
     }
   },
   chipTodo: {
-      color: '#e63946'
+      color: '#f1faee'
   },
   chipDone: {
     color: "#f1faee",
@@ -67,6 +67,5 @@ const styles = (theme) => ({
     color: "green",
     fontSize: "20px"
   }
-
 });
 export default withStyles(styles)(CardItem);

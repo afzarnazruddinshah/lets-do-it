@@ -1,5 +1,5 @@
-import { DONE } from "../../components/Todo/Todo"
-import { ADD_ITEM, COMPLETE_ITEM, REMOVE_ITEM } from "./todoActionTypes"
+import { DONE } from "../../common/constants"
+import { ADD_ITEM, CLEAR_ALL_ITEMS, COMPLETE_ITEM, REMOVE_ITEM } from "./ActionTypes"
 
 export function addItem(todoItem)
 {
@@ -28,5 +28,12 @@ export function completeItem(todoItem)
         payload: {
             todoItem: {...todoItem, itemStatus: DONE}
         }
+    }
+}
+
+export function clearAllItems(){
+    return {
+        type: CLEAR_ALL_ITEMS,
+        payload: {}
     }
 }
