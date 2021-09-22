@@ -3,74 +3,63 @@ import { DeleteForever, Save, Cached } from "@material-ui/icons";
 import React, { useState } from "react";
 import { withStyles } from "@material-ui/core";
 import Dialog from "./../Dialog/Dialog";
+import { generateRandomUuid } from "../../common/generateRandomUuid";
+import SaveTemplateDialog from "./SaveTemplateDialog";
+import LoadTemplateDialog from "./LoadTemplateDialog";
 
 const Menu = (props) => {
-  const { classes, onClearAll, isListAvailable, onSaveTemplate } = props;
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [dialogProps, setDialogProps] = useState({
-    title: "",
-    contentText: "",
-  });
-  const templateNameRef = React.useRef(null);
+  const {
+    classes,
+    onClearAll,
+    isListAvailable,
+    onSaveTemplate,
+    templates,
+    onLoadTemplate,
+  } = props;
+  const [isClearAllDialogOpen, setIsClearAllDialogOpen] = useState(false);
+  const [isSaveTemplateOpen, setIsSaveTemplateOpen] = useState(false);
+  const [isLoadTemplateOpen, setIsLoadTemplateOpen] = useState(false);
 
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-  };
-
+  //Clear All Dialog Handlers
   const handleClearAllClick = () => {
-    setDialogProps(clearAllDialogProps);
-    setIsModalOpen(true);
+    setIsClearAllDialogOpen(true);
   };
 
   const handleClearAllAgree = () => {
-    setIsModalOpen(false);
+    setIsClearAllDialogOpen(false);
     onClearAll();
   };
 
+  const handleClearAllClose = () => {
+    setIsClearAllDialogOpen(false);
+  };
+
+  //Save Template Dialog Handlers
   const handleSaveTemplate = () => {
-    setDialogProps(saveTemplateDialogProps);
-    setIsModalOpen(true);
+    setIsSaveTemplateOpen(true);
   };
 
-  const handleSaveTemplateAgree = () => {
-    console.log(templateNameRef.current.value);
-    setIsModalOpen(false);
-    onSaveTemplate(templateNameRef.current.value);
+  const handleSaveTemplateAgree = (templateName) => {
+    setIsSaveTemplateOpen(false);
+    onSaveTemplate(templateName, generateRandomUuid());
   };
 
-  // const handleLoadTemplateAgree = () => {
-  //   setIsModalOpen(false);
-  //   onSaveTemplate(templateNameRef.current.value);
-  // };
-
-  // const loadTemplateDialogProps = {
-  //   title: "Select a Template",
-  //   onClickYes: () => handleLoadTemplateAgree(),
-  //   onClickNo: () => handleModalClose(),
-  // };
-
-  const clearAllDialogProps = {
-    title: "Confirm Clear All?",
-    contentText: "This will delete all your to-do items beyond recovery",
-    children: "",
-    onClickYes: () => handleClearAllAgree(),
-    onClickNo: () => handleModalClose(),
+  const handleSaveTemplateClose = () => {
+    setIsSaveTemplateOpen(false);
   };
 
-  const saveTemplateDialogProps = {
-    title: "Save Template",
-    contentText: "Please enter a name",
-    onClickYes: () => handleSaveTemplateAgree(),
-    onClickNo: () => handleModalClose(),
-    children: (
-      <TextField
-        id="template-input"
-        inputRef={templateNameRef}
-        className={classes.textField}
-        variant="outlined"
-        placeholder={"Template Name"}
-      />
-    ),
+  //Load Template Dialog Handlers
+  const handleLoadTemplate = () => {
+    setIsLoadTemplateOpen(true);
+  };
+
+  const handleLoadTemplateAgree = (templateId) => {
+    setIsLoadTemplateOpen(false);
+    onLoadTemplate(templateId);
+  };
+
+  const handleLoadTemplateClose = () => {
+    setIsLoadTemplateOpen(false);
   };
 
   return (
@@ -88,8 +77,8 @@ const Menu = (props) => {
             size="small"
             variant="contained"
             color="primary"
-            disabled
-            onClick={handleSaveTemplate}
+            disabled={!Boolean(templates.length)}
+            onClick={handleLoadTemplate}
             className={classes.loadTemplateButton}
           >
             Load Template
@@ -122,7 +111,26 @@ const Menu = (props) => {
             <DeleteForever className={classes.clearAllIcon} fontSize="small" />
           </Button>
         </Grid>
-        <Dialog isOpen={isModalOpen} dialogProps={dialogProps} />
+        <Dialog
+          isOpen={isClearAllDialogOpen}
+          title={"Confirm Clear All?"}
+          caption={"This will delete all your to-do items beyond recovery"}
+          primaryBtnLabel={"Yes"}
+          secondaryBtnLabel={"No"}
+          primaryBtnAction={handleClearAllAgree}
+          secondaryBtnAction={handleClearAllClose}
+        />
+        <SaveTemplateDialog
+          isOpen={isSaveTemplateOpen}
+          primaryBtnAction={handleSaveTemplateAgree}
+          secondaryBtnAction={handleSaveTemplateClose}
+        />
+        <LoadTemplateDialog
+          isOpen={isLoadTemplateOpen}
+          templates={templates}
+          primaryBtnAction={handleLoadTemplateAgree}
+          secondaryBtnAction={handleLoadTemplateClose}
+        />
       </Grid>
     </>
   );
@@ -141,7 +149,7 @@ const styles = (theme) => ({
   },
   clearAllButton: {
     textTransform: "none",
-    fontSize: '12px',
+    fontSize: "12px",
     backgroundColor: "#e63946",
     borderRadius: "5px 20px 5px 5px",
   },
@@ -156,12 +164,12 @@ const styles = (theme) => ({
   loadTemplateButton: {
     textTransform: "none",
     backgroundColor: "#e63946",
-    fontSize: '12px',
+    fontSize: "12px",
     borderRadius: "20px 5px 5px 5px",
   },
   saveTemplateButton: {
     textTransform: "none",
-    fontSize: '12px',
+    fontSize: "12px",
     backgroundColor: "#e63946",
     borderRadius: "5px 5px 5px 5px",
   },
@@ -171,5 +179,9 @@ const styles = (theme) => ({
     top: "-1px",
   },
 });
+
+Menu.defaultProps = {
+  templates: [],
+};
 
 export default withStyles(styles)(Menu);

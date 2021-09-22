@@ -35,7 +35,9 @@ const Todo = (props) => {
     todoList,
     date: today,
     clearAllItems,
-    saveTemplate
+    saveTemplate,
+    loadTemplate,
+    templates
   } = props;
   const addTaskTextField = React.useRef(null);
   const [todoItem, setTodoItem] = React.useState("");
@@ -91,15 +93,14 @@ const Todo = (props) => {
     clearAllItems();
   };
 
-  const handleSaveTemplate = (templateName) => {
-    saveTemplate({ templateName, todoList});
+  const handleSaveTemplate = (templateName, templateId) => {
+    saveTemplate({ templateName, templateId, todoList});
   };
 
-  const handleLoadTemplate = (templateName) => {
-    
+  const handleLoadTemplate = (templateId) => {
+      const selectedTemplate = templates.find(item=> item.templateId === templateId);
+      loadTemplate(selectedTemplate.todoList);
   }
-
-  console.log(props);
 
   return (
     <div className={classes.root}>
@@ -190,6 +191,7 @@ const Todo = (props) => {
               isListAvailable={Boolean(todoList.length)}
               onClearAll={handleClearAll}
               onLoadTemplate={handleLoadTemplate}
+              templates={templates}
             />
             {todoList.map((todoItem, index) => (
               <CardItem

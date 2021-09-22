@@ -7,7 +7,7 @@ import {
   completeItem,
   clearAllItems,
 } from "./../../redux/actions/todoActions";
-import { saveTemplate } from "../../redux/actions/templatesActions";
+import { loadTemplate, saveTemplate } from "../../redux/actions/templatesActions";
 
 const TodoContainer = (props) => {
   return (
@@ -20,6 +20,7 @@ const TodoContainer = (props) => {
 const mapStateToProps = (state) => ({
   todoList: state.todoList,
   date: new Date().toDateString(),
+  templates: state.templates
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -28,6 +29,7 @@ const mapDispatchToProps = (dispatch) => ({
   completeItem: (todoItem) => dispatch(completeItem(todoItem)),
   clearAllItems: () => dispatch(clearAllItems()),
   saveTemplate: (template) => dispatch(saveTemplate(template)),
+  loadTemplate: (todoList) => dispatch(loadTemplate(todoList))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoContainer);

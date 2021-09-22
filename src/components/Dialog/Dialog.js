@@ -9,38 +9,51 @@ import {
 } from "@material-ui/core";
 
 const Dialog = (props) => {
-  const { dialogProps, isOpen } = props;
+  const {
+    title,
+    caption,
+    isOpen,
+    primaryBtnLabel,
+    primaryBtnAction,
+    secondaryBtnLabel,
+    secondaryBtnAction,
+    children
+  } = props;
 
   const handleClickYes = () => {
-    dialogProps.onClickYes();
+    primaryBtnAction();
   };
 
   const handleClickNo = () => {
-    dialogProps.onClickNo();
+    secondaryBtnAction();
   };
 
   return (
     <MuiDialog
       open={isOpen}
-      onClose={dialogProps.onClickNo}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
+      onClose={secondaryBtnAction}
+      aria-labelledby="dialog-title"
+      aria-describedby="dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">{dialogProps.title}</DialogTitle>
-      <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          {dialogProps.contentText}
-        </DialogContentText>
-        {dialogProps.children}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClickNo} color="default">
-          No
-        </Button>
-        <Button onClick={handleClickYes} color="primary" autoFocus>
-          Yes
-        </Button>
-      </DialogActions>
+      <DialogTitle id="dialog-title">{title}</DialogTitle>
+      {caption && (
+        <DialogContent>
+          <DialogContentText id="dialog-description">
+            {caption}
+          </DialogContentText>
+          {children}
+        </DialogContent>
+      )}
+      {primaryBtnAction && secondaryBtnAction && (
+        <DialogActions>
+          <Button onClick={handleClickNo} color="default">
+            {secondaryBtnLabel}
+          </Button>
+          <Button onClick={handleClickYes} color="primary" autoFocus>
+          {primaryBtnLabel}
+          </Button>
+        </DialogActions>
+      )}
     </MuiDialog>
   );
 };
