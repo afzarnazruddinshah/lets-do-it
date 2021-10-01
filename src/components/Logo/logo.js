@@ -1,12 +1,20 @@
-import React from 'react';
-import './logo.scss';
+import React from "react";
+import "./logo.scss";
 
 const Logo = (props) => {
-    return ( 
-        <>
-        <h4 style={{userSelect: 'none'}}><b><span>Let's  </span><span>DoIt</span></b></h4>
-        </>
-     );
-}
- 
+  const title = props.title.split(" ");
+
+  return (
+    <>
+      <h4 style={{ userSelect: "none" }}>
+        <b>
+          {title.map((word, index) => (
+            <span key={index}>{word}</span>
+          ))}
+        </b>
+      </h4>
+    </>
+  );
+};
+
 export default Logo;

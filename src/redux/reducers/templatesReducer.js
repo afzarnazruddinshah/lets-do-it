@@ -1,5 +1,5 @@
 
-import { SAVE_TEMPLATE } from '../actions/ActionTypes';
+import { SAVE_TEMPLATE } from '../actions/Template/TemplateActionTypes';
 const initState = [];
 
 const templatesReducer = (state=initState, action) =>

@@ -1,11 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import Routes from './Routes';
 import { createStore, applyMiddleware, compose } from "redux";
 import { Provider } from "react-redux";
 import thunk from "redux-thunk";
 import rootReducer from './redux/reducers/rootReducer';
+
 function saveToLocalStorage(state) {
   try {
     const serializedState = JSON.stringify(state);
@@ -43,7 +44,7 @@ store.subscribe( () => {
 
 ReactDOM.render(
   <Provider  store={store} >
-    <App />
+    <Routes />
   </Provider>
   ,
   document.getElementById('root')

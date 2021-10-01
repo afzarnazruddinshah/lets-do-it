@@ -12,7 +12,7 @@ export const RadioGroup = ({value, options, onSelectValue, labelProp, valueProp}
   return (
     <>
       <MuiRadioGroup
-        aria-label="templates"
+        aria-label="radio-group"
         name="controlled-radio-buttons-group"
         value={value}
         onChange={handleTemplateChange}

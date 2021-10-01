@@ -1,4 +1,4 @@
-import { SAVE_TEMPLATE, LOAD_TEMPLATE } from "./ActionTypes";
+import { SAVE_TEMPLATE, LOAD_TEMPLATE } from "./TemplateActionTypes";
 
 export function saveTemplate(template){
     return {

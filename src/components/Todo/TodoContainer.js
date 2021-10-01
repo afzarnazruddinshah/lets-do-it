@@ -6,10 +6,16 @@ import {
   removeItem,
   completeItem,
   clearAllItems,
-} from "./../../redux/actions/todoActions";
-import { loadTemplate, saveTemplate } from "../../redux/actions/templatesActions";
+} from "./../../redux/actions/Todo/TodoActions";
+import { loadTemplate, saveTemplate } from "../../redux/actions/Template/TemplateActions";
+import { closeSideNavBar, openSideNavBar, updateAppBarTitle } from "../../redux/actions/UI/UIActions";
 
 const TodoContainer = (props) => {
+  const { updateAppBarTitle} = props;
+  React.useEffect(()=>{
+    updateAppBarTitle('Todo List');
+  }, []);
+  
   return (
     <>
       <Todo {...props} />
@@ -29,7 +35,10 @@ const mapDispatchToProps = (dispatch) => ({
   completeItem: (todoItem) => dispatch(completeItem(todoItem)),
   clearAllItems: () => dispatch(clearAllItems()),
   saveTemplate: (template) => dispatch(saveTemplate(template)),
-  loadTemplate: (todoList) => dispatch(loadTemplate(todoList))
+  loadTemplate: (todoList) => dispatch(loadTemplate(todoList)),
+  openSideNavBar: () => dispatch(openSideNavBar()),
+  closeSideNavBar: () => dispatch(closeSideNavBar()),
+  updateAppBarTitle: (title) => dispatch(updateAppBarTitle(title))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoContainer);

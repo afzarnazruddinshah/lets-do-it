@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Typography,
   withStyles,
   TextField,
   Grid,
@@ -8,9 +7,13 @@ import {
   FormControl,
   Select,
   MenuItem,
+  Tooltip,
+  Toolbar,
+  IconButton,
+  Typography,
+  AppBar as MuiAppBar,
 } from "@material-ui/core";
-import DoneIcon from "@material-ui/icons/Done";
-import IconButton from "@material-ui/core/IconButton";
+import { ArrowRightAlt } from "@material-ui/icons";
 import _ from "lodash";
 import CardItem from "../Card/CardItem";
 import { generateRandomUuid } from "../../common/generateRandomUuid";
@@ -18,14 +21,15 @@ import {
   HIGH_PRIORITY,
   LOW_PRIORITY,
   MEDIUM_PRIORITY,
+  EMPTY_LIST_MESSAGE,
+  ADD_ITEM_PLACEHOLDER,
+  ITEM_ALREADY_ADDED,
+  MAX_CHARACTERS_TODO_ITEM,
 } from "../../common/constants";
 import PriorityIcon from "../PriorityIcons/PriorityIcons";
 import PriorityIcons from "../PriorityIcons/PriorityIcons";
-import Logo from "../Logo/logo";
-import MenuIcon from "@material-ui/icons/Menu";
-import SideNavigationBar from "../SideNavigationBar/SideNavigationBar";
 import { TODO, DONE } from "../../common/constants";
-import Menu from "../Menu/Menu";
+import Features from "../Menu/Menu";
 
 const Todo = (props) => {
   const {
@@ -33,38 +37,63 @@ const Todo = (props) => {
     addItem,
     removeItem,
     todoList,
-    date: today,
     clearAllItems,
     saveTemplate,
     loadTemplate,
-    templates
+    templates,
   } = props;
+
   const addTaskTextField = React.useRef(null);
   const [todoItem, setTodoItem] = React.useState("");
-  const [priority, setPriority] = React.useState(MEDIUM_PRIORITY);
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const month = today.split(" ")[1];
-  const date = today.split(" ")[2];
-  const year = today.split(" ")[3];
+  const [priority, setPriority] = React.useState(HIGH_PRIORITY);
+  const [showInputToolTip, setShowInputToolTip] = React.useState(false);
+  const [inputTooltipMessage, setInputTooltipMessage] = React.useState("");
+
+  React.useEffect(() => {
+  }, [todoItem]);
 
   const handleItemChange = (e) => {
-    setTodoItem(e.target.value);
+    const value = e.target.value;
+    if (value.length <= 65) {
+      setTodoItem(value);
+      if (showInputToolTip) {
+        setShowInputToolTip(false);
+      }
+    } else {
+      setInputTooltipMessage(MAX_CHARACTERS_TODO_ITEM);
+      setShowInputToolTip(true);
+    }
   };
 
-  const handleItemAdd = () => {
-    addItem({
-      itemId: generateRandomUuid(),
-      itemValue: todoItem,
-      itemStatus: TODO,
-      itemPriority: priority,
-    });
-    setTodoItem("");
+  const handleInputTooltipClose = () => {
+    setShowInputToolTip(false);
+  };
+
+  const handleItemAdd = (e) => {
+    e.preventDefault();
+    const duplicate = todoList.find((item) => item.itemValue === todoItem);
+    if (!Boolean(duplicate)) {
+      addItem({
+        itemId: generateRandomUuid(),
+        itemValue: todoItem,
+        itemStatus: TODO,
+        itemPriority: priority,
+      });
+      setTodoItem("");
+    } else {
+      setInputTooltipMessage(ITEM_ALREADY_ADDED);
+      setShowInputToolTip(true);
+    }
     if (addTaskTextField.current) {
       addTaskTextField.current.focus();
     }
   };
 
   const handleItemClick = (itemId) => {
+    const selectedTodoIndex = todoList.findIndex(
+      (item) => item.itemId === itemId
+    );
+    const modifiedTodo = (todoList[selectedTodoIndex].itemStatus = DONE);
     const ret = _.chain(todoList)
       .find({ itemId: itemId })
       .merge({ itemStatus: DONE })
@@ -81,76 +110,65 @@ const Todo = (props) => {
     setPriority(e.target.value);
   };
 
-  const handleMenuClick = () => {
-    setIsMenuOpen(true);
-  };
-
-  const handleMenuClose = () => {
-    setIsMenuOpen(false);
-  };
-
   const handleClearAll = () => {
     clearAllItems();
   };
 
   const handleSaveTemplate = (templateName, templateId) => {
-    saveTemplate({ templateName, templateId, todoList});
+    saveTemplate({ templateName, templateId, todoList });
   };
 
   const handleLoadTemplate = (templateId) => {
-      const selectedTemplate = templates.find(item=> item.templateId === templateId);
-      loadTemplate(selectedTemplate.todoList);
-  }
+    const selectedTemplate = templates.find(
+      (item) => item.templateId === templateId
+    );
+    loadTemplate(selectedTemplate.todoList);
+  };
 
   return (
     <div className={classes.root}>
-      <div className={classes.header}>
-        <Grid
-          container
-          direction="row"
-          justifyContent="flex-start"
-          alignItems="center"
-          spacing={3}
-          className={classes.inputContainer}
-        >
-          <Grid
-            onClick={handleMenuClick}
-            item
-            className={classes.menuContainer}
-          >
-            {" "}
-            <MenuIcon fontSize="large" className={classes.menuIcon} />
-          </Grid>
-          <Grid item>
-            <Logo />{" "}
-            <Typography className={classes.appTitle} variant="caption">
-              {`${month} ${date} ${year}`}
-            </Typography>
-          </Grid>
-        </Grid>
-      </div>
-      <div className={classes.input}>
-        <Card className={classes.card}>
+      {/* <div className={classes.header}></div> */}
+      <Grid item>
+        <Typography className={classes.dashboardTitle} variant="subtitle1">
+          {"Your Board"}
+        </Typography>
+      </Grid>
+      <Card raised={false} className={classes.primaryCard} color="primary">
+        <form className={classes.addItemForm} onSubmit={handleItemAdd}>
           <Grid
             container
             direction="row"
-            justifyContent="flex-start"
+            justifyContent="space-between"
             alignItems="center"
-            spacing={3}
+            spacing={1}
             className={classes.inputContainer}
+            xs={12}
           >
-            <Grid item className={classes.grid1}>
-              <TextField
-                value={todoItem}
-                id="input"
-                inputRef={addTaskTextField}
-                className={classes.textField}
-                variant="outlined"
-                onChange={handleItemChange}
-                placeholder={"What's on your list.."}
-              />
+            <Grid xs={8} item>
+              <Tooltip
+                arrow
+                onClose={handleInputTooltipClose}
+                open={showInputToolTip}
+                disableFocusListener
+                disableHoverListener
+                disableTouchListener
+                placement={"top"}
+                title={inputTooltipMessage}
+              >
+                <TextField
+                  value={todoItem}
+                  className={classes.textField}
+                  id="input"
+                  color="primary"
+                  inputProps={{ maxLength: 70 }}
+                  inputRef={addTaskTextField}
+                  onChange={handleItemChange}
+                  placeholder={ADD_ITEM_PLACEHOLDER}
+                  variant="outlined"
+                />
+              </Tooltip>
             </Grid>
-            <Grid item className={classes.grid2}>
+            <Grid xs={2} item className={classes.priorityGrid}>
               <FormControl className={classes.formControl}>
                 <Select
                   labelId="demo-simple-select-label"
@@ -172,27 +190,42 @@ const Todo = (props) => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item className={classes.grid3}>
+            <Grid xs={2} item className={classes.addButtonGrid}>
               <IconButton
+                type="submit"
                 aria-label="add-item"
-                className={classes.addButton}
+                disabled={!Boolean(todoItem)}
+                className={`${classes.addButton} ${
+                  !Boolean(todoItem) ? classes.disabledBtn : ""
+                }`}
                 size="small"
-                onClick={handleItemAdd}
               >
-                <DoneIcon className={classes.addButtonIcon} fontSize="small" />
+                <ArrowRightAlt
+                  className={classes.addButtonIcon}
+                  fontSize="small"
+                />
               </IconButton>
             </Grid>
           </Grid>
+        </form>
+        <Card raised={false} className={classes.featuresCard}>
+          <Features
+            onSaveTemplate={handleSaveTemplate}
+            isListAvailable={Boolean(todoList.length)}
+            onClearAll={handleClearAll}
+            onLoadTemplate={handleLoadTemplate}
+            templates={templates}
+          />
         </Card>
+      </Card>
+      {/* <Grid item>
+        <Typography className={classes.dashboardTitle} variant="subtitle1">
+          {"Your Board"}
+        </Typography>
+      </Grid> */}
+      <div className={classes.input}>
         <div className={classes.todoList}>
           <Card className={classes.todoListCard}>
-            <Menu
-              onSaveTemplate={handleSaveTemplate}
-              isListAvailable={Boolean(todoList.length)}
-              onClearAll={handleClearAll}
-              onLoadTemplate={handleLoadTemplate}
-              templates={templates}
-            />
             {todoList.map((todoItem, index) => (
               <CardItem
                 itemId={todoItem.itemId}
@@ -206,15 +239,13 @@ const Todo = (props) => {
             ))}
             {todoList.length === 0 && (
               <p className={classes.emptyList}>
-                <PriorityIcons priority={HIGH_PRIORITY} /> Rest in the end, not
-                in the Middle.
+                <PriorityIcons priority={HIGH_PRIORITY} />
+                {EMPTY_LIST_MESSAGE}
               </p>
             )}
           </Card>
-          {/* {todoList.length === 0 && <p>It Feels empty here :(</p>} */}
         </div>
       </div>
-      <SideNavigationBar onClose={handleMenuClose} isOpen={isMenuOpen} />
     </div>
   );
 };
@@ -224,13 +255,36 @@ const styles = (theme) => ({
     width: "100%",
     margin: "auto",
     padding: "10px",
+    color: "white",
+  },
+  primaryCard: {
+    backgroundColor: "#00112a",
+    color: "white",
+    margin: "8px 2px 0px -2px"
+  },
+  addItemForm: {
+    // textAlign: "center"
+  },
+  featuresCard: {
+    marginBottom: "10px",
+    paddingBottom: theme.spacing(1),
+    backgroundColor: "#00112a",
+    color: "white",
+    verticalAlign: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    boxShadow: "none",
   },
   logo: {
     width: "60px",
     height: "30px",
     display: "inline-block",
   },
-
+  dashboardTitle: {
+    textAlign: "left",
+    paddingLeft: theme.spacing(2),
+    marginTop: theme.spacing(1)
+  },
   title: {
     textAlign: "center",
     // border: '1px solid red',
@@ -238,6 +292,15 @@ const styles = (theme) => ({
     marginTop: "10%",
     padding: "10px 10px 0px 10px",
     color: "#f1faee",
+  },
+  emptyList: {
+    textAlign: "center",
+    color: "#e63946",
+  },
+
+  header: {
+    margin: "2%",
+    marginBottom: "15%",
   },
   menuContainer: {
     padding: "0px !important",
@@ -248,9 +311,8 @@ const styles = (theme) => ({
     position: "relative",
     top: "-10px",
   },
-  emptyList: {
-    textAlign: "center",
-    color: "#e63946",
+  inputContainer: {
+    padding: "10px",
   },
   appTitle: {
     fontWeight: "600",
@@ -258,30 +320,14 @@ const styles = (theme) => ({
     textAlign: "center",
     color: "#f1faee",
   },
-  header: {
-    margin: "2%",
-    marginBottom: "15%",
-  },
-  grid1: {
-    padding: "12px !important",
-  },
-  grid2: {
-    padding: "12px !important",
-  },
-  grid3: {
-    padding: "12px 0px !important",
-  },
-  inputContainer: {
-    padding: "10px",
-  },
   input: {
-    margin: "2%",
+    // margin: "2%",
   },
   textField: {
     "& .MuiInputBase-root": {
-      borderRadius: "20px",
+      borderRadius: "4px",
       width: "100%",
-      height: "50px",
+      height: theme.spacing(5),
       backgroundColor: "#f1faee",
     },
     "&:hover": {
@@ -289,16 +335,27 @@ const styles = (theme) => ({
     },
   },
   addButton: {
-    padding: "10px",
-    borderRadius: "18px",
-    backgroundColor: "#e63946",
-    color: "#f1faee",
+    padding: "10px 0px 10px 0px",
+    minWidth: theme.spacing(6),
+    height: theme.spacing(4.5),
+    borderRadius: theme.spacing(1),
+    backgroundColor: "white",
+    color: "#e63946",
   },
-  addButtonIcon: {
-    borderRadius: "10px",
+  disabledBtn: {
+    backgroundColor: "#ccc !important",
+  },
+  priorityGrid: {
+    // border: "1px solid white",
   },
   formControl: {
-    width: "100%",
+    width: "75%",
+    borderRadius: theme.spacing(1),
+    backgroundColor: "white",
+    padding: theme.spacing(0, 0.5),
+    height: theme.spacing(4.5),
+    alignItems: "stretch",
+    justifyContent: "center",
   },
   formSelect: {
     "&": {
@@ -312,11 +369,18 @@ const styles = (theme) => ({
   card: {
     borderRadius: "20px",
     backgroundColor: "#a8dadc",
+    position: "sticky",
+    top: "0",
+    zIndex: "99",
   },
   todoListCard: {
-    borderRadius: "20px",
+    borderRadius: theme.spacing(1),
     marginTop: "10px",
-    backgroundColor: "#a8dadc",
+    backgroundColor: "#1d3557",
   },
+  addButtonGrid: {
+    textAlign: 'right',
+    paddingRight: '0px'
+  }
 });
 export default withStyles(styles)(Todo);

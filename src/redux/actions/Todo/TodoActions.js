@@ -1,5 +1,5 @@
-import { DONE } from "../../common/constants"
-import { ADD_ITEM, CLEAR_ALL_ITEMS, COMPLETE_ITEM, REMOVE_ITEM } from "./ActionTypes"
+import { ADD_ITEM, CLEAR_ALL_ITEMS, COMPLETE_ITEM, REMOVE_ITEM } from "./TodoActionTypes"
+import { DONE } from './../../../common/constants';
 
 export function addItem(todoItem)
 {

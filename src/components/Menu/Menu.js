@@ -6,7 +6,7 @@ import Dialog from "./../Dialog/Dialog";
 import { generateRandomUuid } from "../../common/generateRandomUuid";
 import SaveTemplateDialog from "./SaveTemplateDialog";
 import LoadTemplateDialog from "./LoadTemplateDialog";
-
+import { LOAD_LIST_BTN, SAVE_LIST_BTN, CLEAR_ALL_BTN } from "../../common/constants";
 const Menu = (props) => {
   const {
     classes,
@@ -67,7 +67,7 @@ const Menu = (props) => {
       <Grid
         container
         direction="row"
-        justifyContent="flex-end"
+        justifyContent="space-around"
         alignItems="center"
         spacing={3}
         className={classes.menuBar}
@@ -81,7 +81,7 @@ const Menu = (props) => {
             onClick={handleLoadTemplate}
             className={classes.loadTemplateButton}
           >
-            Load Template
+            {LOAD_LIST_BTN}
             <Cached className={classes.clearAllIcon} fontSize="small" />
           </Button>
         </Grid>
@@ -94,7 +94,7 @@ const Menu = (props) => {
             disabled={!isListAvailable}
             className={classes.saveTemplateButton}
           >
-            Save as Template
+            {SAVE_LIST_BTN}
             <Save className={classes.clearAllIcon} fontSize="small" />
           </Button>
         </Grid>
@@ -107,7 +107,7 @@ const Menu = (props) => {
             disabled={!isListAvailable}
             className={classes.clearAllButton}
           >
-            Clear All
+            {CLEAR_ALL_BTN}
             <DeleteForever className={classes.clearAllIcon} fontSize="small" />
           </Button>
         </Grid>
@@ -151,7 +151,7 @@ const styles = (theme) => ({
     textTransform: "none",
     fontSize: "12px",
     backgroundColor: "#e63946",
-    borderRadius: "5px 20px 5px 5px",
+    borderRadius: theme.spacing(.5),
   },
   loadTemplateGrid: {
     padding: "0px !important",
@@ -165,13 +165,13 @@ const styles = (theme) => ({
     textTransform: "none",
     backgroundColor: "#e63946",
     fontSize: "12px",
-    borderRadius: "20px 5px 5px 5px",
+    borderRadius: theme.spacing(.5),
   },
   saveTemplateButton: {
     textTransform: "none",
     fontSize: "12px",
     backgroundColor: "#e63946",
-    borderRadius: "5px 5px 5px 5px",
+    borderRadius: theme.spacing(.5),
   },
   clearAllIcon: {
     verticalAlign: "top",
