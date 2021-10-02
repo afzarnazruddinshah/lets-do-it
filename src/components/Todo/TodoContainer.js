@@ -7,15 +7,23 @@ import {
   completeItem,
   clearAllItems,
 } from "./../../redux/actions/Todo/TodoActions";
-import { loadTemplate, saveTemplate } from "../../redux/actions/Template/TemplateActions";
-import { closeSideNavBar, openSideNavBar, updateAppBarTitle } from "../../redux/actions/UI/UIActions";
+import {
+  loadTemplate,
+  saveTemplate,
+} from "../../redux/actions/Template/TemplateActions";
+import {
+  closeSideNavBar,
+  openSideNavBar,
+  openSnackbar,
+  updateAppBarTitle,
+} from "../../redux/actions/UI/UIActions";
 
 const TodoContainer = (props) => {
-  const { updateAppBarTitle} = props;
-  React.useEffect(()=>{
-    updateAppBarTitle('Todo List');
+  const { updateAppBarTitle } = props;
+  React.useEffect(() => {
+    updateAppBarTitle("Todo List");
   }, []);
-  
+
   return (
     <>
       <Todo {...props} />
@@ -26,7 +34,7 @@ const TodoContainer = (props) => {
 const mapStateToProps = (state) => ({
   todoList: state.todoList,
   date: new Date().toDateString(),
-  templates: state.templates
+  templates: state.templates,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -38,7 +46,8 @@ const mapDispatchToProps = (dispatch) => ({
   loadTemplate: (todoList) => dispatch(loadTemplate(todoList)),
   openSideNavBar: () => dispatch(openSideNavBar()),
   closeSideNavBar: () => dispatch(closeSideNavBar()),
-  updateAppBarTitle: (title) => dispatch(updateAppBarTitle(title))
+  updateAppBarTitle: (title) => dispatch(updateAppBarTitle(title)),
+  openSnackbar: (message) => dispatch(openSnackbar(message)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoContainer);

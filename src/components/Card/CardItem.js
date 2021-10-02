@@ -26,15 +26,10 @@ const CardItem = (props) => {
           direction="row"
           justifyContent="flex-start"
           alignItems="center"
-          xs={12}
         >
           <Grid item xs={1} className={classes.grid}>
-            <IconButton className={classes.delButton}>
-              <DeleteOutlineIcon
-                className={classes.icon}
-                fontSize="small"
-                onClick={handleDelete}
-              />
+            <IconButton onClick={handleDelete} className={classes.delButton}>
+              <DeleteOutlineIcon className={classes.icon} fontSize="small" />
             </IconButton>
           </Grid>
           <Grid item xs={10}>
@@ -73,7 +68,7 @@ const styles = (theme) => ({
     color: "#f1faee",
     borderRadius: theme.spacing(1),
     fontSize: "16px",
-    padding: theme.spacing(.75),
+    padding: theme.spacing(0.75),
     maxHeight: "64px",
     height: "inherit",
     width: "inherit",
@@ -90,7 +85,7 @@ const styles = (theme) => ({
     borderRadius: theme.spacing(1),
     backgroundColor: "#55a630",
     fontSize: "16px",
-    padding: theme.spacing(.75),
+    padding: theme.spacing(0.75),
     maxHeight: "50px",
     width: "100%",
     "& .MuiChip-label": {
@@ -113,11 +108,10 @@ const styles = (theme) => ({
   grid: {
     textAlign: "center",
   },
-  delButton: { 
-    paddingLeft: "0px", 
+  delButton: {
+    paddingLeft: "0px",
     paddingRight: "0px",
-    color: 'red'
-  
+    color: "red",
   },
 });
 export default withStyles(styles)(CardItem);

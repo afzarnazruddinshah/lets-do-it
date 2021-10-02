@@ -25,6 +25,8 @@ import {
   ADD_ITEM_PLACEHOLDER,
   ITEM_ALREADY_ADDED,
   MAX_CHARACTERS_TODO_ITEM,
+  ITEM_ADDED_SUCCESSFULLY,
+  TEMPLATE_SAVED_SUCCESSFULLY,
 } from "../../common/constants";
 import PriorityIcon from "../PriorityIcons/PriorityIcons";
 import PriorityIcons from "../PriorityIcons/PriorityIcons";
@@ -41,6 +43,7 @@ const Todo = (props) => {
     saveTemplate,
     loadTemplate,
     templates,
+    openSnackbar,
   } = props;
 
   const addTaskTextField = React.useRef(null);
@@ -49,8 +52,7 @@ const Todo = (props) => {
   const [showInputToolTip, setShowInputToolTip] = React.useState(false);
   const [inputTooltipMessage, setInputTooltipMessage] = React.useState("");
 
-  React.useEffect(() => {
-  }, [todoItem]);
+  React.useEffect(() => {}, [todoItem]);
 
   const handleItemChange = (e) => {
     const value = e.target.value;
@@ -80,6 +82,7 @@ const Todo = (props) => {
         itemPriority: priority,
       });
       setTodoItem("");
+      openSnackbar(ITEM_ADDED_SUCCESSFULLY);
     } else {
       setInputTooltipMessage(ITEM_ALREADY_ADDED);
       setShowInputToolTip(true);
@@ -116,6 +119,8 @@ const Todo = (props) => {
 
   const handleSaveTemplate = (templateName, templateId) => {
     saveTemplate({ templateName, templateId, todoList });
+    //Open snackbar
+    openSnackbar(`${templateName} ${TEMPLATE_SAVED_SUCCESSFULLY}`);
   };
 
   const handleLoadTemplate = (templateId) => {
@@ -142,7 +147,6 @@ const Todo = (props) => {
             alignItems="center"
             spacing={1}
             className={classes.inputContainer}
-            xs={12}
           >
             <Grid xs={8} item>
               <Tooltip
@@ -260,7 +264,7 @@ const styles = (theme) => ({
   primaryCard: {
     backgroundColor: "#00112a",
     color: "white",
-    margin: "8px 2px 0px -2px"
+    margin: "8px 2px 0px -2px",
   },
   addItemForm: {
     // textAlign: "center"
@@ -283,7 +287,7 @@ const styles = (theme) => ({
   dashboardTitle: {
     textAlign: "left",
     paddingLeft: theme.spacing(2),
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   title: {
     textAlign: "center",
@@ -379,8 +383,8 @@ const styles = (theme) => ({
     backgroundColor: "#1d3557",
   },
   addButtonGrid: {
-    textAlign: 'right',
-    paddingRight: '0px'
-  }
+    textAlign: "right",
+    paddingRight: "0px",
+  },
 });
 export default withStyles(styles)(Todo);
